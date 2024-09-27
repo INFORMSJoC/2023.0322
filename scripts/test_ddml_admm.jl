@@ -41,10 +41,12 @@ labels = "label_".*string.(csv[:,end])
 alpha = 0.8
 regWeight = 10^5
 
+
 triplets = TripletModule.build_triplets(data, labels)
 Random.seed!(3)
 shuffle!(triplets)
 println("Total triplets number:",length(triplets))
+
 @time x,errors=RereDiagDmlADMMDistributed.admmIterate(triplets,regWeight,alpha)
 
 # x = round.(x;digits=12)

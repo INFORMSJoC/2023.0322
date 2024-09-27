@@ -13,8 +13,8 @@ using StatsBase
 using DiagDml
 using TripletModule
 
-#本文件用于测试DDML（对角化度量学习）的A传统求解器，如乘子法、罚函数法、和线性规划方法（仅能用于原问题或者L1）
-#This file is used to test the performance of the traditional solvers for DDML(Diagonal Distance Metric Learning)
+#本文件用于测试DDML（对角化度量学习）的求解器，如交替方向乘子法、拉格朗日乘子法和线性规划方法（仅能用于原问题或者L1）。罚函数法等方法的使用请在DiagDml模块中设置
+#This file is used to test the performance of the proposed and traditional solvers for DDML(Diagonal Distance Metric Learning)
 
 path="G:\\dataset\\dml_feature_selection_data\\"
 f = "credit_score2"
@@ -25,7 +25,7 @@ fn=path*f*".csv"
 println("Loading data from $fn--------------------------")
 csv = CSV.read(fn,DataFrame)
 # data = convert(Array{Float16,2}, csv[:,1:end-1])
-data = Array{Float16,2}(csv[:,1:end-1])
+data = Array{Float32,2}(csv[:,1:end-1])
 dt = fit(UnitRangeTransform, data, dims=1)
 # dt = fit(ZScoreTransform, data, dims=1)
 data = StatsBase.transform(dt, data)
@@ -36,11 +36,23 @@ labels = "label_".*string.(csv[:,end])
 reg = "l2"
 reg = "elastic"
 reg = "none"
+
+# 是否使用ADMM求解器，不使用ADMM时，默认使用拉格朗日乘子法
+if_admm = true
+
+max_trip_num = 10000000
+if !if_admm
+    # 使用传统梯度下降法的求解器时，三元组的数量设置取决于运行电脑的内存大小，设置过大容易导致内存崩溃
+    max_trip_num = 3000
+end
+
 # reg = "l1"
-distance_type = "huber2"
+distance_type = "no_huber"
 regWeight = 10^2.5
-triplets = TripletModule.build_triplets(data, labels)
-@time x=DiagDml.solve_diag_dml(triplets,regWeight,0.8,distance_type)
+alpha = 0.8
+
+triplets = TripletModule.build_triplets(data, labels,max_trip_num)
+@time x=DiagDml.solve_diag_dml(triplets,regWeight,alpha,distance_type)
 x = round.(x;digits=12)
 println("Solutions:",x)
 new_data = data * Diagonal(x)

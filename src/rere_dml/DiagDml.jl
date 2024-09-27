@@ -9,7 +9,9 @@ using RereDiagDmlSolverLangMul
 using RereDiagDmlSolverPf2
 using RereDiagDmlSolverPf
 using RereDmlLpSolverAdmmSplittingColumns
+using RereDiagDmlADMMDistributed
 using LinearAlgebra
+using Random
 
 export solve_diag_dml
 
@@ -22,15 +24,18 @@ function solve_diag_dml(
     regWeight::Number = 0,
     a::Number = 0.5,
     distance::String = "huber",
+    if_admm::Bool = true,
     tau::Number = 2^8
 )
     punishment_mu = 5000
     n = length(triplets)
     println("Triplet number:", n)
-    A, b, c = create_coefficients_with_triplets(triplets, Float32.(punishment_mu),distance,Float32(tau))
+    
     m = length(triplets[1].xj) # number of features
     r = n # number of slack variables
     s = n # number of surplus variables
+
+
     x = nothing
     regType = nothing
     if a == 0
@@ -41,13 +46,27 @@ function solve_diag_dml(
         regType = "elastic"
     end
     if lowercase(regType) == "l2" || lowercase(regType) == "elastic"
-        # x = RereDiagDmlSolverPf.solveDmlLp(c, A, b, regType, regWeight,a)
-        # 拉格朗日乘数法中未使用解决不等式的剩余变量
-        x = RereDiagDmlSolverLangMul.solveDmlLp(c[1:m+n], A[:,1:m+n], b, regType, regWeight,a)
-        # x = RereDiagDmlSolverPf2.solveDmlLp(c[1:m+n], A[:,1:m+n], b, regType, regWeight,a)
-        # x = RereDiagDmlSolverPf2.solveDmlLp(c[1:m], A[:,1:m], b, regType, regWeight,a)
-        # x = RereDmlLpSolverAdmmSplittingColumns.solveDmlLpWithAdmm(c,A,b,m,r,s,regType,regWeight)
+        if if_admm
+            # 使用并行化ADMM方法求解
+            # use parallelized ADMM to solve
+            Random.seed!(3)
+            shuffle!(triplets)
+            x,errors=RereDiagDmlADMMDistributed.admmIterate(triplets,regWeight,a)
+        else
+            A, b, c = create_coefficients_with_triplets(triplets, Float32.(punishment_mu),distance,Float32(tau))
+            # 使用罚函数法求解
+            # x = RereDiagDmlSolverPf.solveDmlLp(c, A, b, regType, regWeight,a)
+            # 拉格朗日乘数法中未使用解决不等式的剩余变量
+            x = RereDiagDmlSolverLangMul.solveDmlLp(c[1:m+n], A[:,1:m+n], b, regType, regWeight,a)
+            # 使用罚函数法求解
+            # x = RereDiagDmlSolverPf2.solveDmlLp(c[1:m+n], A[:,1:m+n], b, regType, regWeight,a)
+            # x = RereDiagDmlSolverPf2.solveDmlLp(c[1:m], A[:,1:m], b, regType, regWeight,a)
+            # 使用分裂列的ADMM法求解（无法并行化）
+            # x = RereDmlLpSolverAdmmSplittingColumns.solveDmlLpWithAdmm(c,A,b,m,r,s,regType,regWeight)
+        end
     else
+        # 如果正则化法为L1，线性规划求解速度极快，无必要使用梯度下降法，直接使用线性规划方法求解
+        A, b, c = create_coefficients_with_triplets(triplets, Float32.(punishment_mu),distance,Float32(tau))
         x = RereDmlLpSolver.solveDmlLp(c, A, b, regWeight)
         # x = RereDiagDmlSolverPf2.solveDmlLp(c[1:m], A[:,1:m], b, regType, regWeight,a)
     end
