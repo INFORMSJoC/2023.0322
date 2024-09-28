@@ -40,36 +40,34 @@ The models proposed in the paper are implemented using Julia language (v.1.8.0),
 
 ## Description
 
-This repository provides an end-to-end solution to the static rebalancing operations in bike sharing systems. The study uses the raw data of bike demand and station inventory status to generate the optimal rebalancing routes that reallocate system-wide bike inventories among stations during the night to maintain a high service level while minimizing demand loss due to stockout or overcapacity. The repository reports the raw data, algorithms, and extensive numerical experiments reported in the paper, using real-world data from New York City Citi Bike.
-
-This repository provides an implementation of the regularized diagonal Distance Metric Learning (DML) model, which improves distance metrics, selecting features and conduct grouping effect analysis by rescaling the features. One characteristic of the proposed model is that it does not pursue linear separability, which is highly unrealistic in financial data. Another characteristic of the proposed model is that it does not ommit correlated features when conducting feature selection, and thus not neglect important credit risk sources when used for credit evaluation. The implementation of the solver based on ADMM makes it suitable for large-scale financial application. The repository also provides the scripts, raw data, and experiments results reported in the paper, using real-world data from a Chinese bank.
+This repository provides an implementation of the regularized diagonal Distance Metric Learning (DML) model, which improves distance metrics, selecting features and conduct grouping effect analysis by rescaling the features. One characteristic of the proposed model is that it does not pursue linear separability, which is highly unrealistic in financial data. Another characteristic of the proposed model is that it does not ommit correlated features when conducting feature selection, and thus not neglect important credit risk sources when used for credit evaluation. The implementation of the solver based on Alternating Direction Method of Multipliers(ADMM) makes it suitable for large-scale financial application. The repository also provides the scripts, raw data, and experiments results reported in the paper, using real-world data from a Chinese bank.
 
 
 This repository includes four folders, **src**, **scripts**, **data**, and **results**.
 
 ## Source code
-The **src** folder contains the solvers of the regularized diagonal DML problems and the helper modules used to build triplets, formulate optimization problems, and return optimized ressults. Specifically, the folder contains the following folders:
+The **src** folder contains the solvers of the regularized diagonal DML problems and the helper modules used to build triplets, formulate optimization problems, and return optimized ressults. Specifically, the folder contains the following sub-folders:
 
 The **solver** folder contains the solvers of the regularized diagonal DML problems.
 
-1. RereDiagDmlADMMDistributed.jl: The main solver of the optimization problem with ADMM-based parallelization. It can split the problem with many blocks of samples, and is suitable for large-scale industrial applications.
-2. RereDmlLpSolver.jl: The solver based on Linear Programming. It has three typical use cases: (1) The solver of the DML problem when no regularization is used; (2) The solver of the DML problem when L1 regularization is used; (3) The solver of the optimization problem in the first line of the ADMM functions.
+1. RereDiagDmlADMMDistributed.jl: The main solver of the optimization problem with ADMM-based parallelization. It split the problem into smaller ones using blocks of samples, and is suitable for large-scale industrial applications.
+2. RereDmlLpSolver.jl: The solver based on Linear Programming. It has three typical use cases: (1) The solver of the DML problem when no regularization is used; (2) The solver of the DML problem when L1 regularization is used; (3) The solver of the optimization problem in the first line of the ADMM functions (Eq. 15).
 3. RereDiagDmlSolverLangMul.jl: The solver based on Lagrange Multiplier Method (Augmented Lagrangian Function). It is used to compare the performances with ADMM-based solver. 
 4. RereDiagDmlSolverPf2.jl: The solver based on Penalty Function Method. It is also used to compare the performances with ADMM-based solver. 
 
 The **rere_dml** folder contains the helper modules to formulate the regularized diagonal Distance Metric Learning (DML) problems.
 
 1. TripletModule.jl: The module for building the triplets in DML with provided features and labels.
-2. DiagDml.jl: The module for formulating the triplets and regularization parameters into optimization problems, then call the solvers accordingly, and finally returns the results.
+2. DiagDml.jl: The module for formulating the triplets and regularization parameters into optimization problems, then calling the solvers accordingly, and finally returning the results.
 
 ## Script files
 
 The **script** folder contains the scripts used for DML data transformation and grouping effect analysis. 
 
-1. test_ddml_gd.jl: This file is used to test the performance of the proposed and traditional solvers for DDML(Diagonal Distance Metric Learning).
-2. test_ddml_admm.jl: This file is specially used to test the performance of the ADMM solver for DDML(Diagonal Distance Metric Learning).
-3. grid_search_ddml_admm.jl: This file is used to conduct grid search, i.e., generate transformed files using different combinations of alpha and regWeight, such that we can evaluate the performances of the generated files with k-NN, and infer the best parameters.
-4. reg_path_diag_dml.jl: This file is used to generate the regularization path with different combinations of alpha and regWeight.
+1. test_ddml_gd.jl: This file is used to test the performance of the proposed and traditional solvers for regularized diagonal DML.
+2. test_ddml_admm.jl: This file is specially used to test the performance of the ADMM solver for regularized diagonal DML.
+3. grid_search_ddml_admm.jl: This file is used to conduct grid search, i.e., generate transformed files using different combinations of alpha and regWeight, such that we can evaluate the performances of the generated files with k-NN, and find the best parameter combination.
+4. reg_path_diag_dml.jl: This file is used to generate the regularization path with different combinations of alpha and reglarization weights (defined in Eq. 3).
 5. grouping_effect_analysis.jl: This file is used to analyze the grouping effects of the features. This file depends on the results generated by reg_path_diag_dml.jl, i.e., the regularization path results. 
 6. grouping_effect_analysis_amended.jl: This file is used to analyze the grouping effects of the features with the amend factor. This file depends on the results generated by reg_path_diag_dml.jl, i.e., the regularization path results. 
 
