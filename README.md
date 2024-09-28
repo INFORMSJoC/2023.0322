@@ -42,12 +42,15 @@ The models proposed in the paper are implemented using Julia language (v.1.8.0),
 
 This repository provides an end-to-end solution to the static rebalancing operations in bike sharing systems. The study uses the raw data of bike demand and station inventory status to generate the optimal rebalancing routes that reallocate system-wide bike inventories among stations during the night to maintain a high service level while minimizing demand loss due to stockout or overcapacity. The repository reports the raw data, algorithms, and extensive numerical experiments reported in the paper, using real-world data from New York City Citi Bike.
 
-This repository includes four folders, **src**, **scripts**, **results**, and **data**.
+This repository provides an implementation of the regularized diagonal Distance Metric Learning (DML) model, which improves distance metrics, selecting features and conduct grouping effect analysis by rescaling the features. One characteristic of the proposed model is that it does not pursue linear separability, which is highly unrealistic in financial data. Another characteristic of the proposed model is that it does not ommit correlated features when conducting feature selection, and thus not neglect important credit risk sources when used for credit evaluation. The implementation of the solver based on ADMM makes it suitable for large-scale financial application. The repository also provides the scripts, raw data, and experiments results reported in the paper, using real-world data from a Chinese bank.
+
+
+This repository includes four folders, **src**, **scripts**, **data**, and **results**.
 
 ## Source code
 The **src** folder contains the solvers of the regularized diagonal DML problems and the helper modules used to build triplets, formulate optimization problems, and return optimized ressults. Specifically, the folder contains the following folders:
 
-The **solver** folder contains the solvers of the regularized diagonal Distance Metric Learning (DML) problems.
+The **solver** folder contains the solvers of the regularized diagonal DML problems.
 
 1. RereDiagDmlADMMDistributed.jl: The main solver of the optimization problem with ADMM-based parallelization. It can split the problem with many blocks of samples, and is suitable for large-scale industrial applications.
 2. RereDmlLpSolver.jl: The solver based on Linear Programming. It has three typical use cases: (1) The solver of the DML problem when no regularization is used; (2) The solver of the DML problem when L1 regularization is used; (3) The solver of the optimization problem in the first line of the ADMM functions.
