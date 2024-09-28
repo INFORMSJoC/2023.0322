@@ -16,7 +16,7 @@ using TripletModule
 #本文件用于测试DDML（对角化度量学习）的求解器，如交替方向乘子法、拉格朗日乘子法和线性规划方法（仅能用于原问题或者L1）。罚函数法等方法的使用请在DiagDml模块中设置
 #This file is used to test the performance of the proposed and traditional solvers for DDML(Diagonal Distance Metric Learning)
 
-# path="G:\\dataset\\dml_feature_selection_data\\"
+
 path="./data/"
 # f = "credit_score2"
 f = "credit_data_masked"

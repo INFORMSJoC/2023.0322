@@ -6,10 +6,14 @@ using JuMP,Clp
 using HiGHS
 export solveDmlLp
 
-# Just for testing purpose, 
+
 # Originally Diag-DML and its ℓ_1 regularization solve DDML problems using a Scala library called "SCPSolver.jar", to utilize the parallel computation of Spark.
 # Now we have re-implemented the LP solver of D-DML usring the pure Julia implementation, given that Julia's distributed computing is mature now
-#solve linear programming
+
+#  It has three typical use cases: (1) The solver of the DML problem when no regularization is used; (2) The solver of the DML problem when L1 regularization is used; (3) The solver of the optimization problem in the first line of the ADMM functions (Eq. 15).
+
+
+# solve linear programming
 function solveDmlLp(
   c::Array{Float32},
   A::Array{Float32,2},

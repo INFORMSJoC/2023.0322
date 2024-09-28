@@ -14,10 +14,10 @@ using TripletModule
 using Random
 
 
-#本文件用于测试DDML（对角化度量学习）的ADMM求解器
-#This file is specially used to test the performance of the ADMM solver for DDML(Diagonal Distance Metric Learning)
+# 本文件用于测试DDML（对角化度量学习）的ADMM求解器
+# This file is specially used to test the performance of the ADMM solver for DDML(Diagonal Distance Metric Learning)
 
-# path="G:\\dataset\\dml_feature_selection_data\\"
+
 path="./data/"
 # f = "credit_score2"
 f = "credit_data_masked"

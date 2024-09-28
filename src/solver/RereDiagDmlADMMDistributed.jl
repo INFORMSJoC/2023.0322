@@ -14,7 +14,7 @@ using Base.Threads
 export admmIterate
 
 #本模块为Diagonal DML优化问题的主要求解器并已基于多线程实现了并行化，分块方法为按样本分裂，可以用于并行计算
-# This module is the main solver of the DDML optimization with real parallelization, it can split the problem with many blocks of samples, and it can be used for parallel computing
+# This module is the main solver of the DDML optimization with real parallelization, it splits the problem into smaller ones with many blocks of samples, and it can be used for parallel computing
 # This module is provided for real large-scale industrial applications.
 
 # Remember to set the number of execution threads using the JULIA_NUM_THREADS environment variable
