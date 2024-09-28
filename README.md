@@ -40,20 +40,21 @@ The models proposed in the paper are implemented using Julia language (v.1.8.0),
 
 ## Description
 
-This repository provides an implementation of the regularized diagonal Distance Metric Learning (DML) model, which improves distance metrics, selecting features and conduct grouping effect analysis by rescaling the features. One characteristic of the proposed model is that it does not pursue linear separability, which is highly unrealistic in financial data. Another characteristic of the proposed model is that it does not ommit correlated features when conducting feature selection, and thus not neglect important credit risk sources when used for credit evaluation. The implementation of the solver based on Alternating Direction Method of Multipliers(ADMM) makes it suitable for large-scale financial application. The repository also provides the scripts, raw data, and experiments results reported in the paper, using real-world data from a Chinese bank.
+This repository provides an implementation of the regularized diagonal Distance Metric Learning (DML) model, which improves distance metrics, selects features, and conducts grouping effect analysis by rescaling the features. One characteristic of the proposed model is that it does not pursue linear separability, which is highly unrealistic in financial data. Another characteristic of the proposed model is that it does not omit correlated features when conducting feature selection, and thus, does not neglect important credit risk sources when used for credit evaluation. The implementation of the solver based on the Alternating Direction Method of Multipliers(ADMM) makes it suitable for large-scale financial applications. The repository also provides the scripts, raw data, and experiments results reported in the paper, using a real-world dataset from a Chinese bank.
 
 
 This repository includes four folders, **src**, **scripts**, **data**, and **results**.
 
 ## Source code
-The **src** folder contains the solvers of the regularized diagonal DML problems and the helper modules used to build triplets, formulate optimization problems, and return optimized ressults. Specifically, the folder contains the following sub-folders:
+The **src** folder contains the solvers of the regularized diagonal DML problems and the helper modules used to build triplets, formulate optimization problems, and return optimized results. Specifically, the folder contains the following sub-folders:
 
 The **solver** folder contains the solvers of the regularized diagonal DML problems.
 
-1. RereDiagDmlADMMDistributed.jl: The main solver of the optimization problem with ADMM-based parallelization. It split the problem into smaller ones using blocks of samples, and is suitable for large-scale industrial applications.
-2. RereDmlLpSolver.jl: The solver based on Linear Programming. It has three typical use cases: (1) The solver of the DML problem when no regularization is used; (2) The solver of the DML problem when L1 regularization is used; (3) The solver of the optimization problem in the first line of the ADMM functions (Eq. 15).
-3. RereDiagDmlSolverLangMul.jl: The solver based on Lagrange Multiplier Method (Augmented Lagrangian Function). It is used to compare the performances with ADMM-based solver. 
-4. RereDiagDmlSolverPf2.jl: The solver based on Penalty Function Method. It is also used to compare the performances with ADMM-based solver. 
+1. RereDiagDmlADMMDistributed.jl: It is the main solver of the optimization problem with ADMM-based parallelization. It splits the problem into smaller ones using blocks of samples and is suitable for large-scale industrial applications.
+2. RereDmlLpSolver.jl: The solver is based on Linear Programming. It has three typical use cases: (1) The solver of the DML problem when no regularization is used; (2) The solver of the DML problem when L1 regularization is used; (3) The solver of the optimization problem in the first line of the ADMM functions (Eq. 15).
+3. RereDiagDmlSolverLangMul.jl: The solver is based on Lagrange Multiplier Method (Augmented Lagrangian Function). It is used to compare the performances with the ADMM-based solver. 
+4. RereDiagDmlSolverPf2.jl:  The solver is based on Penalty Function Method. It is also used to compare the performances with the ADMM-based solver. 
+
 
 The **rere_dml** folder contains the helper modules to formulate the regularized diagonal Distance Metric Learning (DML) problems.
 
@@ -64,12 +65,12 @@ The **rere_dml** folder contains the helper modules to formulate the regularized
 
 The **script** folder contains the scripts used for DML data transformation and grouping effect analysis. 
 
-1. test_ddml_gd.jl: This file is used to test the performance of the proposed and traditional solvers for regularized diagonal DML.
-2. test_ddml_admm.jl: This file is specially used to test the performance of the ADMM solver for regularized diagonal DML.
-3. grid_search_ddml_admm.jl: This file is used to conduct grid search, i.e., generate transformed files using different combinations of alpha and regWeight, such that we can evaluate the performances of the generated files with k-NN, and find the best parameter combination.
-4. reg_path_diag_dml.jl: This file is used to generate the regularization path with different combinations of alpha and reglarization weights (defined in Eq. 3).
+1. test_ddml_gd.jl: The script is used to test the performance of the proposed and traditional solvers for regularized diagonal DML.
+2. test_ddml_admm.jl: The script is specially used to test the performance of the ADMM solver for regularized diagonal DML.
+3. grid_search_ddml_admm.jl: The script is used to conduct grid search, i.e., generate transformed files using different combinations of alpha and regularization weights, such that we can evaluate the performances of the generated files with k-NN, and find the best parameter combination.
+4. reg_path_diag_dml.jl: The script is used to generate the regularization path with different combinations of alpha and regularization weights (defined in Eq. 3).
 5. grouping_effect_analysis.jl: This file is used to analyze the grouping effects of the features. This file depends on the results generated by reg_path_diag_dml.jl, i.e., the regularization path results. 
-6. grouping_effect_analysis_amended.jl: This file is used to analyze the grouping effects of the features with the amend factor. This file depends on the results generated by reg_path_diag_dml.jl, i.e., the regularization path results. 
+6. grouping_effect_analysis_amended.jl: The script is used to analyze the grouping effects of the features with the amend factor. This file depends on the results generated by reg_path_diag_dml.jl, i.e., the regularization path results. 
 
 
 ## Data files
