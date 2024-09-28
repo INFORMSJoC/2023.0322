@@ -74,35 +74,11 @@ The **script** folder contains the scripts used for DML data transformation and 
 ## Data files
 The **data** folder contains a sample of the raw data used in the paper and different scales of case studies for the rebalancing optimization. Specifically, the folder contains the following data files:
 
-1. 0-RawData: 3-month raw data of station-level bike demand and inventory status.
-2. 1-DemandData: aggregated bike demand features with regional station inventory status.
-3. 2-DataWeather: Data table with weather conditions for model inputs.
-4. 3-1-SmallCase (SCA): Small case studies of size 15 - 19 for comparison of multi-visit and single-visit strategies. 
-5. 3-2-MiddleCase: Medium case studies of size 20 - 35 for comparison of vMILP and SCA. 
-6. 4-LargeCase: Large case study of the NYC Bike-sharing System.
 
-```python
-HOUR = 8 #hour of the day
-PERIOD = 1 # period of the hour (1: first 30-minutes period; 2: second 30-minutes period)
-WEEKDAY = True #(Weekday demand or weekend demand prediction)
-HISTORICAL_WINDOW = 5 #(time lag. 5: for weekday prediction; 2: weekend prediction.)
-TEST_HORIZON = 10 #(number of days for evaluation)
-```
-The following scripts are used for small and medium case studies:
-
-4. 3-1-Multivisit_vMIP.py: vMIP model that supports multivisit strategy (Table 2).
-5. 3-2-Singlevisit_vMIP.py: vMIP model that supports single visit strategy (Table 2).
-6. 3-3-SCA.py, 3-3-SCA-middlecase.py: SCA heuristic model that supports multi-visit strategy (Tables 3, 4, E1, E2, E3, E4).
-
-The following scripts are used for large case study.
-
-1. 4-1-NYC LargeCase Codeserver.py: SCA heuristic model for the complete case study (Table F.1).
-2. 4-2-NYC LargeCase visualization.py: visualization of the final rebalacing operation decisions (Figure F.1).
-
-
-The **result** folder contains log files and final outputs of the scripts.
+## Results
+The **results** folder contains log files and final outputs of the regularization path and grouping effect analysis.
 
 ## Ongoing Development
 
 This code is being developed on an on-going basis at the author's
-[Github site](https://github.com/liujm8/IJOC-Bike).
+[Github site](https://github.com/lteb2002/ddml).
