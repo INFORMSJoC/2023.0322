@@ -47,6 +47,14 @@ This repository includes three folders, **src**, **scripts**, **results**, and *
 ## Source code
 The **src** folder contains a sample of the raw data used in the paper and different scales of case studies for the rebalancing optimization. Specifically, the folder contains the following data files:
 
+The **solver** folder contains the solvers of the regularized diagonal Distance Metric Learning (DML) problems.
+
+1. RereDiagDmlADMMDistributed.jl: The main solver of the optimization problem with ADMM-based parallelization. It can split the problem with many blocks of samples, and is suitable for large-scale industrial applications.
+2. RereDmlLpSolver.jl: The solver based on Linear Programming. It has three typical use cases: (1) The solver of the DML problem when no regularization is used; (2) The solver of the DML problem when L1 regularization is used; (3) The solver of the optimization problem in the first line of the ADMM functions.
+3. RereDiagDmlSolverLangMul.jl: The solver based on Lagrange Multiplier Method (Augmented Lagrangian Function). It is used to compare the performances with ADMM-based solver. 
+4. RereDiagDmlSolverPf2.jl: The solver based on Penalty Function Method. It is also used to compare the performances with ADMM-based solver. 
+
+
 1. 0-RawData: 3-month raw data of station-level bike demand and inventory status.
 2. 1-DemandData: aggregated bike demand features with regional station inventory status.
 3. 2-DataWeather: Data table with weather conditions for model inputs.
