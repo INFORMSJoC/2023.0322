@@ -22,7 +22,7 @@ To cite the contents of this repository, please cite both the paper and this rep
 Below is the BibTex for citing this version of the code.
 
 ```
-@article{liu2024ijoc,
+@article{tie_li_2024ijoc,
   author =        {Tie Li and Gang Kou and Yi Peng and Philip S. Yu},
   publisher =     {INFORMS Journal on Computing},
   title =         {Feature Selection and Grouping Effect Analysis for Credit Evaluation via Regularized Diagonal Distance Metric Learning},
@@ -34,6 +34,7 @@ Below is the BibTex for citing this version of the code.
 ```
 ## Requirements
 
+The models proposed in the paper are implemented using Julia language, and the dependencies of the Julia liabraries can be found in [Project.toml](Project.toml).
 For this project, we use the following Python Packages:
 
 1. Networkx is for the creation and study of the structrue, dynamics, and properties of network structure.
