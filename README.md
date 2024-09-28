@@ -54,17 +54,14 @@ The **solver** folder contains the solvers of the regularized diagonal Distance 
 3. RereDiagDmlSolverLangMul.jl: The solver based on Lagrange Multiplier Method (Augmented Lagrangian Function). It is used to compare the performances with ADMM-based solver. 
 4. RereDiagDmlSolverPf2.jl: The solver based on Penalty Function Method. It is also used to compare the performances with ADMM-based solver. 
 
+The **rere_dml** folder contains the helper modules to formulate the regularized diagonal Distance Metric Learning (DML) problems.
 
-1. 0-RawData: 3-month raw data of station-level bike demand and inventory status.
-2. 1-DemandData: aggregated bike demand features with regional station inventory status.
-3. 2-DataWeather: Data table with weather conditions for model inputs.
-4. 3-1-SmallCase (SCA): Small case studies of size 15 - 19 for comparison of multi-visit and single-visit strategies. 
-5. 3-2-MiddleCase: Medium case studies of size 20 - 35 for comparison of vMILP and SCA. 
-6. 4-LargeCase: Large case study of the NYC Bike-sharing System.
+1. TripletModule.jl: The module used to build the triplets in DML with provided features and labels.
+2. DiagDml.jl: The module used to formulate the triplets and regularization parameters into optimization problems, then call the solvers accordingly, and finally returns the results.
 
 ## Script files
 
-The **script** folder contains the core scripts used for data processing, prediction, and optimization. 
+The **script** folder contains the scripts used for DML data transformation and grouping effect analysis. 
 
 1. 0-Generate_AggregateDemand.py: generage aggregate demand (in 1-DemandData Folder) using raw dataset (in 0-RawData).
 2. 1-CombineWeather.py: combine weather information and generate data table (in 2-DataWeather).
