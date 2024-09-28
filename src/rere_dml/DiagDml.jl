@@ -1,8 +1,6 @@
 
 module DiagDml
 
-push!(LOAD_PATH, "./")
-push!(LOAD_PATH, "./lpsolver")
 using RereDmlLpSolver
 using TripletModule
 using RereDiagDmlSolverLangMul
@@ -15,7 +13,7 @@ using Random
 
 export solve_diag_dml
 
-#本模块用于为度量学习问题适配合适的传统求解器（非并行化ADMM，ADMM请参看test_ddml_admm）
+#本模块用于为度量学习问题适配合适的求解器（ADMM的单独调用方法请参考test_ddml_admm）
 #This module works as a helper to connect DML problem with its solvers
 #This module is not intended to use ADMM solver
 
@@ -72,9 +70,11 @@ function solve_diag_dml(
     end
     if x != nothing
         x = x[1:m]
-        x = [e > 0 ? e : 0.0 for e in x]
+        # x = [e > 0 ? e : 0.0 for e in x]
+        x[x.<0] .= 0
+        # The square root form of the solution can be used directly for data transformation
         x = sqrt.(x)
-        x = round.(x;digits=6)
+        x = round.(x;digits=12)
     end
     return x
 end

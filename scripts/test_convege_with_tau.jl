@@ -2,8 +2,8 @@
 
 
 push!(LOAD_PATH, "./")
-push!(LOAD_PATH, "./rere_dml")
-push!(LOAD_PATH, "./lpsolver")
+push!(LOAD_PATH, "./src/rere_dml")
+push!(LOAD_PATH, "./src/solver")
 
 using CSV
 using Tables

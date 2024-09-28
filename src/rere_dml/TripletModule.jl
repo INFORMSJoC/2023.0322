@@ -6,7 +6,7 @@ using NearestNeighbors
 
 export Triplet, build_triplets
 
-max_triplet_number = 1000000
+
 noise_num = 5
 
 mutable struct Triplet
@@ -19,7 +19,12 @@ mutable struct Triplet
 end
 
 # 根据数据的特征和标签构建三元组
-function build_triplets(features::Array{Float32,2}, labels)
+function build_triplets(
+    features::Array{Float32,2}, 
+    labels::Vector{String},
+    max_triplet_number::Int64 = 10000000
+    )
+
     triplets::Array{Triplet,1} = []
     trs = Dict()  # 字典，存放了标签及其对应的数据子集
     for la in unique(labels)

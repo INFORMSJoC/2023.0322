@@ -2,8 +2,8 @@
 
 
 push!(LOAD_PATH, "./")
-push!(LOAD_PATH, "./rere_dml")
-push!(LOAD_PATH, "./lpsolver")
+push!(LOAD_PATH, "./src/rere_dml")
+push!(LOAD_PATH, "./src/solver")
 
 using CSV
 using Tables
@@ -15,12 +15,15 @@ using DiagDml
 using TripletModule
 using Distributed
 
+# This file is used to generate the regularization path with different combinations of alpha and regWeight.
 
-path="G:\\dataset\\dml_feature_selection_data\\"
-f = "credit_score2"
 
-path2 = path*f*"\\"
-path3 = path*f*"\\reg_path\\"
+path="./data/"
+# f = "credit_score2"
+f = "credit_data_masked"
+
+path2 = path*f*"/"
+path3 = path*f*"/reg_path/"
 
 fn=path*f*".csv"
 println("Number of workers:",nworkers())
@@ -34,16 +37,16 @@ labels = "label_".*string.(csv_data[:,end])
 # println(labels)
 # println(labels)
 
-lns = 10.0 : -0.5: 5.5
-as=1.0:0.1:1.0
-distance_type = "huber2"
+lns = 5.5 : -0.5: -5.5
+as=0.0:0.1:1.0
+distance_type = "no_huber"
 triplets = TripletModule.build_triplets(data, labels)
 for a in as
     println("Current task:",a)
     w_stack = zeros(length(lns),size(data)[2])
     Threads.@threads for (i,pow) in collect(pairs(lns))
         w = 10.0^pow
-        @time x=DiagDml.solve_diag_dml(triplets,w,a,distance_type)
+        @time x=DiagDml.solve_diag_dml(triplets,w,a,distance_type,true)
         # @time x=DiagDml.solve_diag_dml(data,labels,w,a,distance_type)
         println("Solutions of a:"*string(a)*",w:"*string(pow)*":",x)
         new_data = data * Diagonal(x)

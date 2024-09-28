@@ -1,9 +1,6 @@
 
-module RereDiagDmlADMMDistributed
+module RereDiagDmlADMM
 
-push!(LOAD_PATH, "./")
-push!(LOAD_PATH, "./rere_dml")
-push!(LOAD_PATH, "./lpsolver")
 
 using DiagDml
 using RereDmlLpSolver
@@ -11,17 +8,13 @@ using LinearAlgebra
 using Statistics
 using Optim, LineSearches
 using Random
-using Base.Threads
 # using Distributed
 
 export admmIterate
 
-#本模块为Diagonal DML优化问题的主要求解器并已基于多线程实现了并行化，分块方法为按样本分裂，可以用于并行计算
-# This module is the main solver of the DDML optimization with real parallelization, it can split the problem with many blocks of samples, and it can be used for parallel computing
-# This module is provided for real large-scale industrial applications.
-
-# Remember to set the number of execution threads using the JULIA_NUM_THREADS environment variable
-# We set JULIA_NUM_THREADS = 80. The number should be set according to the available threads of your computer
+#本模块为Diagonal DML优化问题的主要求解器 (未实现真正并行计算)，分块方法为按样本分裂，可以用于并行计算
+# This module is the main solver of the DDML optimization without real implementation of parallelization, it can split the problem with many blocks of samples, and it can be used for parallel computing
+# This module is specially provided for the ones that have difficulties to run distributed Julia programs.
 
 
 #分裂样本为N块
@@ -29,7 +22,7 @@ export admmIterate
 function splitBlocks(triplets)
     #每个块的样本量
     #The number of the samples in each block
-    num_each = 1000
+    num_each = 2000
     total = length(triplets)
     n_blocks::Int = total % num_each == 0 ? floor(Int,total/num_each) : floor(Int,total/num_each)+1
     trs = Dict() 
@@ -42,15 +35,15 @@ function splitBlocks(triplets)
         trs[i]=triplets[first:last]
     end
     for (k,ts) in trs
-        println("Block number:",k,", triplets number:",length(ts))
+        println("Block number:",k,"Triplets number:",length(ts))
     end
     return trs
 end
 
 
 
-# 优化W步，即针对分裂后的每个数据块进行优化
-# optimization of W step in ADMM, i.e., the local optimization based on each data block.
+#优化W步，即针对分裂后的每个数据块进行优化
+#optimization of W step in ADMM, i.e., the local optimization based on each data block.
 function optimizeW(w, z, y,rho,regWeight,triplets)
     tau = 10.0
     tau2 = 10.0
@@ -103,7 +96,7 @@ function optimizeW(w, z, y,rho,regWeight,triplets)
         wAll = RereDmlLpSolver.solveDmlLp(Float32.(c), Float32.(A), Float32.(b),regWeight)
         w = wAll[1:m]
     catch e
-        println(e)
+        
     end
 
     # println("A sub-task finished...,w:",w)
@@ -111,7 +104,7 @@ function optimizeW(w, z, y,rho,regWeight,triplets)
 end
 
 
-# 计算L1正则项的数值
+#计算L1正则项的数值
 # calculate the value of the L1 term
 function sign_for_l1(z)
     param_c = 1.0E-10 # 1范数拟合函数参数
@@ -137,11 +130,11 @@ function sign_for_l1_gradient(z)
     return gra
 end
 
-# 计算DML正则项，包括L1、L2。在ADMM中为g(Z)
+# 计算DML正则项，包括L1、L2
 # calculate the total value of the regularization terms including L1 and L2. (g(Z) in ADMM. )
 function compute_reg_value(z,alpha)
     l1,l2=alpha,(1-alpha)
-    obj_p = l1*sign_for_l1(z) + l2*sum(z .^ 2) 
+    obj_p = l2*sum(z .^ 2) + l1*sign_for_l1(z)
     return obj_p
 end
 
@@ -149,18 +142,18 @@ end
 # calculate the gradients of the regularization terms including L1 and L2.
 function compute_reg_grad(z,alpha)
     l1,l2=alpha,(1-alpha)
-    grad_p = l1*sign_for_l1_gradient(z) + l2*2.0 * z 
+    grad_p = l2*2.0 * z + l1*sign_for_l1_gradient(z)
     return grad_p
 end
 
-# 计算ADMM问题的不一致性L2惩罚
+#计算ADMM问题的不一致性L2惩罚
 # calculate the L2-type punishment value in the second line of the ADMM equation.
 function census_punish_l2(w,z,y)
     v = norm(w-z+y)^2
     return v
 end
 
-# 计算ADMM问题的不一致性L2惩罚的梯度
+#计算ADMM问题的不一致性L2惩罚的梯度
 # calculate the gradient of the L2-type punishment in the second line of the ADMM equation.
 function census_punish_l2_grad(w,z,y)
     wy = w+y
@@ -169,15 +162,13 @@ function census_punish_l2_grad(w,z,y)
 end
 
 
-# 优化ADMM中的Z步，即汇总步
-# Z step in ADMM, which aggreates the paralleled results
+#优化ADMM中的Z步，即汇总步
+#Z step in ADMM, which aggreates the paralleled results
 function optimizeZ(initZ, w_bar, y_bar,rho,n,regWeight,alpha)
     #原函数
-    # objective function
     f(z)=regWeight * compute_reg_value(z,alpha) + n*rho/2* census_punish_l2(w_bar,z,y_bar)
     # f(z)=n*rho/2* census_punish_l2(w_bar,z,y_bar)
     #梯度函数
-    #gradient function
     function grad(z) 
         return regWeight * compute_reg_grad(initZ,alpha) + n*rho/2* census_punish_l2_grad(w_bar,z,y_bar)
         # return n*rho/2* census_punish_l2_grad(w_bar,z,y_bar)
@@ -206,29 +197,20 @@ function optimizeZ(initZ, w_bar, y_bar,rho,n,regWeight,alpha)
 
 end
 
-# 进行一轮ADMM优化迭代
-# conduct one round of the ADMM iteration
+#进行一轮ADMM优化迭代
+#conduct one round of the ADMM iteration
 function admmUpdate(trs,w_map,z,y_map,rho,regWeight,alpha)
     ws = []
     ys = []
-    # Set the number of execution threads using the JULIA_NUM_THREADS environment variable
-    # We set JULIA_NUM_THREADS = 80
-    println("Available threads:",Threads.nthreads())
-
-    taskMap = Dict()
     # addprocs(6)
     for (k,ts) in trs
         w0 = w_map[k]
         y0 = y_map[k]
-        task = Threads.@spawn optimizeW(w0,z,y0,rho,regWeight,ts)
-        taskMap[k] = task
-        y_map[k] = y0
-        push!(ys,y0)
-    end
-    for (k,t) in taskMap
-        wt = fetch(taskMap[k])
+        wt = optimizeW(w0,z,y0,rho,regWeight,ts)
         w_map[k] = wt
         push!(ws,wt)
+        y_map[k] = y0
+        push!(ys,y0)
     end
     w_bar = Statistics.mean(ws)
     # println("w_bar values:",w_bar)
@@ -245,8 +227,8 @@ function admmUpdate(trs,w_map,z,y_map,rho,regWeight,alpha)
     return z,error
 end
 
-# 进行ADMM优化的反复迭代
-# comduct the ADMM iterations, until the optimization finished
+#进行ADMM优化的反复迭代
+#comduct the ADMM iterations, until the optimization finished
 function admmIterate(triplets,regWeight=1.0,alpha=0.5)
     rho = 10.0
     w_map = Dict()

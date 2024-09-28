@@ -1,6 +1,6 @@
 push!(LOAD_PATH, "./")
-push!(LOAD_PATH, "./rere_dml")
-push!(LOAD_PATH, "./lpsolver")
+push!(LOAD_PATH, "./src/rere_dml")
+push!(LOAD_PATH, "./src/solver")
 
 using CSV
 using Tables
@@ -11,6 +11,7 @@ using DiagDml
 using TripletModule
 using Statistics
 
+# This file is used to analyze the distribution of the triplets.
 
 path="E:\\julia_work\\test\\data\\"
 f = "diabetes"
