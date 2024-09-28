@@ -3,7 +3,7 @@
 # Feature Selection and Grouping Effect Analysis for Credit Evaluation via Regularized Diagonal Distance Metric Learning
 
 This archive is distributed in association with the [INFORMS Journal on
-Computing](https://pubsonline.informs.org/journal/ijoc) under the [MIT License](LICENSE).
+Computing](https://pubsonline.informs.org/journal/ijoc) under the [MIT License](LICENSE.txt).
 
 The software and data in this repository are a snapshot of the software and data that were used in the research reported on in the paper 
 [Feature Selection and Grouping Effect Analysis for Credit Evaluation via Regularized Diagonal Distance Metric Learning](https://doi.org/10.1287/ijoc.2023.0322) by Tie Li, Gang Kou, Yi Peng, and Philip S. Yu. 
