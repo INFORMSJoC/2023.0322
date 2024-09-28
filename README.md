@@ -72,7 +72,7 @@ The **script** folder contains the scripts used for DML data transformation and 
 
 
 ## Data files
-The **data** folder contains a sample of the raw data used in the paper and different scales of case studies for the rebalancing optimization. Specifically, the folder contains the following data files:
+The **data** folder contains a masked version of the raw credit data used in the paper. The original meaning of the features can be found in Section 3 of the paper. The sensitive information has been masked, and the order of data rows and columns has been shuffled because of privacy concerns.
 
 
 ## Results
