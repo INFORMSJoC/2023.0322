@@ -1,6 +1,6 @@
 name = "ddml"
 uuid = "b5892367-d618-458f-812e-ad5bebd4724c"
-authors = ["Tie Li, Gang Kou, Yi Peng, Philip S. Yu <lteb2002@163.com>"]
+authors = ["Tie Li <lteb2002@uestc.edu.cn>, Gang Kou<kougang@swufe.edu.cn>, Yi Peng<pengyi@uestc.edu.cn>, Philip S. Yu<psyu@uic.edu>"]
 version = "0.1.0"
 
 [deps]
