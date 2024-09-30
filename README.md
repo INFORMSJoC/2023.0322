@@ -56,7 +56,7 @@ The **solver** contains the solvers of the regularized diagonal DML problems.
 4. RereDiagDmlSolverPf2.jl:  The solver is based on Penalty Function Method and is also used as a traditional solver to compare its performance with the ADMM-based solver. 
 
 
-The **rere_dml** contains the helper modules to formulate the regularized diagonal Distance Metric Learning (DML) problems.
+The **rere_dml** contains the helper modules to formulate the regularized diagonal DML problems.
 
 1. TripletModule.jl: The module builds the triplets in DML with provided features and labels.
 2. DiagDml.jl: The module formulates the triplets and regularization parameters into optimization problems, then calls the solvers accordingly, and finally returns the results.
