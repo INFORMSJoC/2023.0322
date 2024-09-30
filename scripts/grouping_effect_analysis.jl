@@ -103,7 +103,7 @@ end
 println(ajacm)
 
 table = Tables.table(ajacm)
-output = path*"/diff3.csv"
+output = path*"/diff2.csv"
 CSV.write(output,table)
 
 
