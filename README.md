@@ -5,10 +5,10 @@
 This archive is distributed in association with the [INFORMS Journal on
 Computing](https://pubsonline.informs.org/journal/ijoc) under the [MIT License](LICENSE.txt).
 
-The software and data in this repository are a snapshot of the software and data that were used in the research reported on in the paper 
+The software and data in this repository are a snapshot of the software and data reported in the paper 
 [Feature Selection and Grouping Effect Analysis for Credit Evaluation via Regularized Diagonal Distance Metric Learning](https://doi.org/10.1287/ijoc.2023.0322) by Tie Li, Gang Kou, Yi Peng, and Philip S. Yu. 
 
-**Important: This code is being developed on an on-going basis at [https://github.com/lteb2002/ddml](https://github.com/lteb2002/ddml). Please go there if you would like to get a more recent version or would like support**.
+**Important: This code is being developed on an on-going basis at [https://github.com/lteb2002/ddml](https://github.com/lteb2002/ddml). Please go there if you would like to get a more recent version or would like to support**.
 
 ## Cite
 
@@ -40,41 +40,41 @@ The models proposed in the paper are implemented using Julia language (v.1.8.0),
 
 ## Description
 
-This repository provides an implementation of the regularized diagonal Distance Metric Learning (DML) model, which improves distance metrics, selects features, and conducts grouping effect analysis by rescaling the features. One characteristic of the proposed model is that it does not pursue linear separability, which is highly unrealistic in financial data. Another characteristic of the proposed model is that it does not omit correlated features when conducting feature selection, and thus, does not neglect important credit risk sources when used for credit evaluation. The implementation of the solver based on the Alternating Direction Method of Multipliers(ADMM) makes it suitable for large-scale financial applications. The repository also provides the scripts, raw data, and experiments results reported in the paper, using a real-world dataset from a Chinese bank.
+This repository provides an implementation of the regularized diagonal Distance Metric Learning (DML) model, which improves distance metrics, selects features, and conducts grouping effect analysis by rescaling the features. One characteristic of the proposed model is that it does not pursue linear separability, which is highly unrealistic in financial data. Another characteristic of the proposed model is that it considers correlated features when conducting feature selection, and thus, does not neglect important credit risk sources when used for credit evaluation. The implementation of the solver based on the Alternating Direction Method of Multipliers(ADMM) makes it suitable for large-scale financial applications. The repository also provides the scripts, data, and experimental results reported in the paper.
 
 
 This repository includes four folders, **src**, **scripts**, **data**, and **results**.
 
 ## Source code
-The **src** folder contains the solvers of the regularized diagonal DML problems and the helper modules used to build triplets, formulate optimization problems, and return optimized results. Specifically, the folder contains the following sub-folders:
+The **src** folder contains the solvers of the regularized diagonal DML problems and the helper modules used to build triplets, formulate optimization problems, and return optimized results. Specifically, the folder contains the solver and rere_dml sub-folders:
 
-The **solver** folder contains the solvers of the regularized diagonal DML problems.
+The **solver** contains the solvers of the regularized diagonal DML problems.
 
 1. RereDiagDmlADMMDistributed.jl: It is the main solver of the optimization problem with ADMM-based parallelization. It splits the problem into smaller ones using blocks of samples and is suitable for large-scale industrial applications.
-2. RereDmlLpSolver.jl: The solver is based on Linear Programming. It has three typical use cases: (1) The solver of the DML problem when no regularization is used; (2) The solver of the DML problem when L1 regularization is used; (3) The solver of the optimization problem in the first line of the ADMM functions (Eq. 15).
-3. RereDiagDmlSolverLangMul.jl: The solver is based on Lagrange Multiplier Method (Augmented Lagrangian Function). It is used to compare the performances with the ADMM-based solver. 
-4. RereDiagDmlSolverPf2.jl:  The solver is based on Penalty Function Method. It is also used to compare the performances with the ADMM-based solver. 
+2. RereDmlLpSolver.jl: The solver is based on Linear Programming and is used in three typical cases: (1) The solver of the DML problem when no regularization is used; (2) The solver of the DML problem when L1 regularization is used; (3) The solver of the optimization problem in the first line of the ADMM functions (Eq. 15).
+3. RereDiagDmlSolverLangMul.jl: The solver is based on Lagrange Multiplier Method (Augmented Lagrangian Function) and is used as a traditional solver to compare its performance with the ADMM-based solver. 
+4. RereDiagDmlSolverPf2.jl:  The solver is based on Penalty Function Method and is also used as a traditional solver to compare its performance with the ADMM-based solver. 
 
 
-The **rere_dml** folder contains the helper modules to formulate the regularized diagonal Distance Metric Learning (DML) problems.
+The **rere_dml** contains the helper modules to formulate the regularized diagonal Distance Metric Learning (DML) problems.
 
-1. TripletModule.jl: The module for building the triplets in DML with provided features and labels.
-2. DiagDml.jl: The module for formulating the triplets and regularization parameters into optimization problems, then calling the solvers accordingly, and finally returning the results.
+1. TripletModule.jl: The module builds the triplets in DML with provided features and labels.
+2. DiagDml.jl: The module formulates the triplets and regularization parameters into optimization problems, then calls the solvers accordingly, and finally returns the results.
 
 ## Script files
 
 The **script** folder contains the scripts used for DML data transformation and grouping effect analysis. 
 
 1. test_ddml_gd.jl: The script is used to test the performance of the proposed and traditional solvers for regularized diagonal DML.
-2. test_ddml_admm.jl: The script is specially used to test the performance of the ADMM solver for regularized diagonal DML.
-3. grid_search_ddml_admm.jl: The script is used to conduct grid search, i.e., generate transformed files using different combinations of alpha and regularization weights, such that we can evaluate the performances of the generated files with k-NN, and find the best parameter combination.
+2. test_ddml_admm.jl: The script is used to test the performance of the ADMM solver for regularized diagonal DML.
+3. grid_search_ddml_admm.jl: The script is used to conduct grid search, i.e., generate transformed files using different combinations of alpha and regularization weights (defined in Eq. 3), such that we can evaluate the performance of the generated files with k-NN, and find the best combination of parameters.
 4. reg_path_diag_dml.jl: The script is used to generate the regularization path with different combinations of alpha and regularization weights (defined in Eq. 3).
 5. grouping_effect_analysis.jl: This file is used to analyze the grouping effects of the features. This file depends on the results generated by reg_path_diag_dml.jl, i.e., the regularization path results. 
 6. grouping_effect_analysis_amended.jl: The script is used to analyze the grouping effects of the features with the amend factor. This file depends on the results generated by reg_path_diag_dml.jl, i.e., the regularization path results. 
 
 
 ## Data files
-The **data** folder contains a masked version of the raw credit data used in the paper. The original meaning of the features can be found in Section 3 of the paper. The sensitive information has been masked, and the order of data rows and columns has been shuffled because of privacy concerns.
+The **data** folder contains a masked version of the raw credit data used in the experiment. The original meaning of the features can be found in Section 3 of the paper. The sensitive information has been masked, and the order of data rows and columns has been shuffled due to data privacy.
 
 
 ## Results

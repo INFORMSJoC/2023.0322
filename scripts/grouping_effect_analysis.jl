@@ -16,8 +16,8 @@ using TripletModule
 
 
 path="./results"
-f = "credit_score2"
-f_l1=path*"/reg_path/credit_score2_a_1.0_path.csv"
+f = "credit_data"
+f_l1=path*"/reg_path/credit_data_a_1.0_path.csv"
 
 # Generally speaking, regularization path can be analyzed with any specific a value in range (0,1)
 # To make the result more reliable, all results of the a value 0.6, 0.7, and 0.8 are used. 

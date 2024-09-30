@@ -19,7 +19,7 @@ using Random
 
 
 path="./data/"
-# f = "credit_score2"
+# f = "credit_data"
 f = "credit_data_masked"
 
 

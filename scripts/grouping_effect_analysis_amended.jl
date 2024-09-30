@@ -19,8 +19,8 @@ using TripletModule
 
 
 path="./results"
-f = "credit_score2"
-f_l1=path*"/reg_path/credit_score2_a_1.0_path.csv"
+f = "credit_data"
+f_l1=path*"/reg_path/credit_data_a_1.0_path.csv"
 
 
 reg_files=[f*"_a_0.1_path",f*"_a_0.2_path",f*"_a_0.3_path",f*"_a_0.4_path",f*"_a_0.5_path",f*"_a_0.6_path",f*"_a_0.7_path",f*"_a_0.8_path",f*"_a_0.9_path"]

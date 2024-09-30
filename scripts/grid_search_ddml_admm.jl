@@ -19,7 +19,7 @@ using Random
 # such that we can evaluate the performances of the generated files with k-NN, and infer the best parameters.
 
 path="./data/"
-# f = "credit_score2"
+# f = "credit_data"
 f = "credit_data_masked"
 
 fn=path*f*".csv"
